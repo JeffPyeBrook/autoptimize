@@ -3,8 +3,8 @@
 Plugin Name: Autoptimize
 Plugin URI: http://blog.futtta.be/autoptimize
 Description: Optimizes your website, concatenating the CSS and JavaScript code, and compressing it.
-Version: 1.9.3
-Author: Frank Goossens (futtta)
+Version: 1.9.4
+Author: Frank Goossens (futtta) UPDATED BY JAS
 Author URI: http://blog.futtta.be/
 Domain Path: localization/
 Text Domain: autoptimize
@@ -14,14 +14,17 @@ http://www.gnu.org/licenses/gpl.txt
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+// find the path to the autooptimize plugin
+define('AUTOPTIMIZE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+
 // Load config class
-include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeConfig.php');
+include(AUTOPTIMIZE_PLUGIN_DIR . 'classes/autoptimizeConfig.php' );
 
 // Do we gzip when caching (needed early to load autoptimizeCache.php)
 define('AUTOPTIMIZE_CACHE_NOGZIP',(bool) get_option('autoptimize_cache_nogzip'));
 
 // Load cache class
-include(WP_PLUGIN_DIR.'/autoptimize/classes/autoptimizeCache.php');
+include(AUTOPTIMIZE_PLUGIN_DIR . 'classes/autoptimizeCache.php');
 
 // wp-content dir, dirname of AO cache dir and AO-prefix can be overridden in wp-config.php
 if (!defined('AUTOPTIMIZE_CACHE_CHILD_DIR')) { define('AUTOPTIMIZE_CACHE_CHILD_DIR','/cache/autoptimize/'); }
@@ -44,7 +47,7 @@ $conf = autoptimizeConfig::instance();
 /* Check if we're updating, in which case we might need to do stuff and flush the cache
 to avoid old versions of aggregated files lingering around */
 
-$autoptimize_version="1.9.3";
+$autoptimize_version="1.9.4";
 $autoptimize_db_version=get_option('autoptimize_version','none');
 
 if ($autoptimize_db_version !== $autoptimize_version) {
@@ -268,6 +271,7 @@ function autoptimize_end_buffering($content) {
 		}
 		unset($instance);
 	}
+
 	$content = apply_filters( 'autoptimize_html_after_minify', $content );
 	return $content;
 }
@@ -315,7 +319,7 @@ if(autoptimizeCache::cacheavail()) {
                 if (defined('AUTOPTIMIZE_INIT_EARLIER')) {
                         add_action('init','autoptimize_start_buffering',-1);
                 } else {
-                        add_action('template_redirect','autoptimize_start_buffering',2);
+                        add_action('template_redirect','autoptimize_start_buffering',1);
                 }
 	}
 }
