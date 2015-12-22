@@ -597,6 +597,7 @@ LOD;
 				} else {
 					// relative URL
 					$newurl = preg_replace('/https?:/','',str_replace(" ","%20",AUTOPTIMIZE_WP_ROOT_URL.str_replace('//','/',$dir.'/'.$url)));
+					$newurl = apply_filters( 'autoptimize_filter_base_replace_cdn', $newurl );
 
 					$hash = md5($url);
 					$code = str_replace($matches[0][$k],$hash,$code);
